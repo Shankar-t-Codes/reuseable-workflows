@@ -1,5 +1,5 @@
 name: "Update Commit Status"
-description: "Updates GitHub commit status checks using the GitHub Statues API"
+description: "Updates GitHub commit status checks using the GitHub Statuses API"
 
 inputs:
   sha:
@@ -26,8 +26,8 @@ runs:
           -H "Authorization: Bearer ${{ github.token }}" \
           -H "Content-Type: application/json" \
           --data "{
-          \"state\":"${{ inputs.state }}\",
-          \"context\":"${{ inputs.context }}\",
-          \"description\":"${{ inputs.description }}\"
-          "}"\
-          https://api.github.com/repos/${{ github.repository }}/statues/${{ inputs.sha }}
+            \"state\": \"${{ inputs.state }}\",
+            \"context\": \"${{ inputs.context }}\",
+            \"description\": \"${{ inputs.description }}\"
+          }" \
+          "https://api.github.com/repos/${{ github.repository }}/statuses/${{ inputs.sha }}"
