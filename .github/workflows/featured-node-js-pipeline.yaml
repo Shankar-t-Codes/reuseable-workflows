@@ -60,3 +60,10 @@ jobs:
         state: ${{ steps.docker_build.outcome }}     # success / failure / cancelled
         context: DOCKER_BUILD
         description: ${{ steps.docker_build.outcome }}
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v5.1.1
+      with:
+        aws-region: us-east-1
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY_ID }}
