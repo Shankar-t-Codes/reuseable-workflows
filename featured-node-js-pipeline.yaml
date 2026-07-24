@@ -24,7 +24,7 @@ jobs:
       
     - name: get the version
       run: |
-        #if you store it in GITHUB_ENV, you can use in other steps in same job
+        # if you store it in GITHUB_ENV, you can use in other steps in same job
         echo "APP_VERSION"=${GIHHUB_SHA::9}
 
     - name: install dependies
@@ -33,9 +33,17 @@ jobs:
       id: unit_tests
       run: echo "run unit tests"
 
+    - name: Update unit test status
+      if: always()
+      uses: shankar-t-codes/reuseable-workflows/.github/actions/update-commit-status@main
+      with:
+        sha: ${{ github.sha }}
+        state: ${{ steps.unit_tests.outcome }}     # success / failure / cancelled
+        context: UNIT_TESTS
+        description: ${{ steps.unit_tests.outcome }}
+
     - name: docker build
       id: docker_build
       run: |
         docker build -t ${{ ACC_ID }}.dkr.ecr.us-east-1.amazonaws.com/${{ inputs.project }}/${{ inputs/component }}:${{ APP_VERSION}} .
         docker images
-        
