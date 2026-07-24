@@ -54,7 +54,7 @@ jobs:
         docker images
     - name: Update docker build status
       if: always()
-      uses: Shankar-t-Codes/reuseable-workflows//github/actions/update-commit-status@main
+      uses: Shankar-t-Codes/reuseable-workflows/.github/actions/update-commit-status@main
       with:
         sha: ${{ github.sha }}
         state: ${{ steps.docker_build.outcome }}     # success / failure / cancelled
@@ -67,3 +67,8 @@ jobs:
         aws-region: us-east-1
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY_ID }}
+
+    - name: push image
+      run: |
+        aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${ACC_ID}.dkr.ecr.us-east-1.amazonaws.com
+        docker push ${ACC_ID}.dkr.ecr.us-east-1.amazonaws.com/${{ inputs.project }}/${{ inputs.component }}:${APP_VERSION}
