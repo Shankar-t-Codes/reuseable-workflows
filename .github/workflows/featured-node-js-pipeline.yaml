@@ -25,7 +25,7 @@ jobs:
     - name: get the version
       run: |
         # if you store it in GITHUB_ENV, you can use in other steps in same job
-        echo "APP_VERSION"=${GIHHUB_SHA::9}
+        echo "APP_VERSION"=${GITHUB_SHA::9}
 
     - name: install dependies
       run: npm install
@@ -45,7 +45,7 @@ jobs:
     - name: docker build
       id: docker_build
       run: |
-        docker build -t ${{ ACC_ID }}.dkr.ecr.us-east-1.amazonaws.com/${{ inputs.project }}/${{ inputs/component }}:${{ APP_VERSION}} .
+        docker build -t ${{ ACC_ID }}.dkr.ecr.us-east-1.amazonaws.com/${{ inputs.project }}/${{ inputs/component }}:${{ APP_VERSION }} .
         docker images
 
     - name: Update docker build status
