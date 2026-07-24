@@ -1,6 +1,6 @@
-name: feature-node-js-pipeline
+name: feature-nodejs-pipeline
 on:
-  workflow_call:
+  workflow_call: # will be called by someone, should get inputs from caller
     inputs:
       project:
         required: true
@@ -14,28 +14,33 @@ on:
 env:
   ACC_ID: 367012942501
 jobs:
-  feature-node-js-pipeline:
+  feature-nodejs-pipeline:
     runs-on: self-hosted
     steps:
     - name: checkout code
       uses: actions/checkout@v6
-    - name: list-files
+    - name: list files
       run: ls -l
-      
+
     - name: get the version
       run: |
-        # if you store it in GITHUB_ENV, you can use in other steps in same job
-        echo "APP_VERSION"=${GITHUB_SHA::9}
+        # if you store it in GITHUB_ENV, you can use in other steps in the same job
+        echo "APP_VERSION=${GITHUB_SHA::9}" >> "$GITHUB_ENV"
 
-    - name: install dependies
+    - name: print inputs
+      run: |
+        echo ${{ inputs.project }}
+        echo "version: ${APP_VERSION}"
+
+    - name: install dependencies
       run: npm install
     - name: run unit tests
       id: unit_tests
       run: echo "run unit tests"
 
-    - name: Update unit test status
+    - name: Update unit tests status
       if: always()
-      uses: shankar-t-codes/reuseable-workflows/.github/actions/update-commit-status@main
+      uses: Shankar-t-Codes/reuseable-workflows/.github/actions/update-commit-status@main
       with:
         sha: ${{ github.sha }}
         state: ${{ steps.unit_tests.outcome }}     # success / failure / cancelled
@@ -45,12 +50,11 @@ jobs:
     - name: docker build
       id: docker_build
       run: |
-        docker build -t ${{ env.ACC_ID }}.dkr.ecr.us-east-1.amazonaws.com/${{ inputs.project }}/${{ inputs.component }}:${{ env.APP_VERSION }} .
+        docker build -t ${ACC_ID}.dkr.ecr.us-east-1.amazonaws.com/${{ inputs.project }}/${{ inputs.component }}:${APP_VERSION} .
         docker images
-
     - name: Update docker build status
       if: always()
-      uses: shankar-t-codes/reuseable-workflows/.github/actions/update-commit-status@main
+      uses: Shankar-t-Codes/reuseable-workflows/.github/actions/update-commit-status@main
       with:
         sha: ${{ github.sha }}
         state: ${{ steps.docker_build.outcome }}     # success / failure / cancelled
