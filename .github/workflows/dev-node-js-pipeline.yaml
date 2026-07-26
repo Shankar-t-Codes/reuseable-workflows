@@ -120,4 +120,13 @@ jobs:
     - name: deploy to dev 
       id: dev_deploy
       run: |
-        helm upgrade --install ${{ inputs.component }} -f values-${{ inputs.environment }}.yaml -n ellamma-ecommerce --set deployment.imageVersion=${APP_VERSION} --atomic --wait --timeout=5m .
+        "helm upgrade --install ${{ inputs.component }} -f values-${{ inputs.environment }}.yaml -n ellamma-ecommerce --set deployment.imageVersion=${APP_VERSION} --atomic --wait --timeout=5m ."
+
+    - name: Update DEV deploy status
+      if: always()
+      uses: Shankar-t-Codes/reuseable-workflows/.github/actions/update-commit-status@main
+      with:
+        sha: ${{ github.sha }}
+        state: ${{ steps.dev_deploy.outcome }}     # success / failure / cancelled
+        context: SECURITY_CHECK
+        description: ${{ steps.dev_deploy.outcome }}
