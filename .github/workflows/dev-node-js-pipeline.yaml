@@ -109,3 +109,15 @@ jobs:
     - name: authenticate to EKS
       run: |
         echo "authentication"
+        aws eks update-kubeconfig --region us-east-1 <cluster name>
+        kubectl get nodes
+
+    - name: checkout catalogue deploy repo
+      uses: actions/checkout@v6
+      with:
+        repository: shankar-codes/catalogue-deploy
+    
+    - name: deploy to dev 
+      id: dev_deploy
+      run: |
+        helm upgrade --install ${{ inputs.component }} -f values-${{ inputs.environment }}.yaml -n ellamma-ecommerce --set deployment.imageVersion=${APP_VERSION} --atomic --wait --timeout=5m .
