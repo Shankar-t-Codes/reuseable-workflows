@@ -66,4 +66,8 @@ jobs:
         fi
 
         echo "🎉 All required checks passed"
-    
+
+    - name: deploy to ${{ input.environment }} cluster
+      id: uat_deploy
+      run: |
+        "helm upgrade --install ${{ inputs.component }} -f values-dev.yaml -n ellamma-ecommerce --set deployment.imageVersion=${APP_VERSION} --atomic --wait --timeout=5m ."
