@@ -41,6 +41,7 @@ jobs:
           "DOCKER_BUILD"
           "UNIT_TESTS"
           "SECURITY_CHECK"
+          "UAT_DEPLOY"
         )
 
         RESPONSE=$(curl -s \
