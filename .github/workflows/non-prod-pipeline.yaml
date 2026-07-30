@@ -69,5 +69,13 @@ jobs:
 
     - name: deploy to ${{ input.environment }} cluster
       id: uat_deploy
-      run: |
-        "helm upgrade --install ${{ inputs.component }} -f values-dev.yaml -n ellamma-ecommerce --set deployment.imageVersion=${APP_VERSION} --atomic --wait --timeout=5m ."
+      run: "helm upgrade --install catalogue -f values-dev.yaml -n roboshop --set deployment.imageVersion=${APP_VERSION} --atomic --wait --timeout=5m ."
+
+    - name: Update Deploy status
+      if: always()
+      uses: daws-86s/workflows/.github/actions/update-commit-status@main
+      with:
+        sha: ${{ inputs.version }}
+        state: ${{ steps.uat_deploy.outcome }}     # success / failure / cancelled
+        context: UAT_DEPLOY
+        description: ${{ steps.uat_deploy.outcome }}
