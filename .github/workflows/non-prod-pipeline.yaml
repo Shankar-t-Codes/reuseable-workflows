@@ -87,7 +87,7 @@ jobs:
     - name: checkout catalogue deploy repo
       uses: actions/checkout@v6
       with:
-        repository: shankar-t-codes/catalogue-component-organisation
+        repository: shankar-codes/catalogue-deploy
 
     - name: deploy to ${{ input.environment }} cluster
       id: uat_deploy
@@ -95,7 +95,7 @@ jobs:
 
     - name: Update Deploy status
       if: always()
-      uses: daws-86s/workflows/.github/actions/update-commit-status@main
+      uses: Shankar-t-Codes/reuseable-workflows/.github/actions/update-commit-status@main
       with:
         sha: ${{ inputs.version }}
         state: ${{ steps.uat_deploy.outcome }}     # success / failure / cancelled
