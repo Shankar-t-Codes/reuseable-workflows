@@ -17,7 +17,7 @@ env:
   ACC_ID: 367012942501
 
 jobs:
-  non-prod-gate:
+  prod-gate:
     runs-on: self-hosted
 
     steps:
@@ -89,9 +89,9 @@ jobs:
       with:
         repository: shankar-t-codes/catalogue-component-organisation
 
-    - name: deploy to ${{ input.environment }} cluster
-      id: uat_deploy
-      run: "helm upgrade --install catalogue -f values-dev.yaml -n roboshop --set deployment.imageVersion=${APP_VERSION} --atomic --wait --timeout=5m ."
+    - name: deploy to prod cluster
+      id: prod_deploy
+      run: "helm upgrade --install catalogue -f values-dev.yaml -n ellamma-ecommerce --set deployment.imageVersion=${APP_VERSION} --atomic --wait --timeout=5m ."
 
     - name: Update Deploy status
       if: always()
